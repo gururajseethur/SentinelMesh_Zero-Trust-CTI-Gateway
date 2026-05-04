@@ -1,0 +1,62 @@
+[
+  {
+    "value": "203.0.113.41",
+    "type": "ipv4",
+    "sourceOrg": "ORG-A SOC",
+    "tlp": "AMBER",
+    "confidence": 88,
+    "severity": "HIGH",
+    "firstSeen": "2026-04-21T09:15:00Z",
+    "tags": ["bruteforce", "identity", "ssh"]
+  },
+  {
+    "value": "203.0.113.99",
+    "type": "ipv4",
+    "sourceOrg": "ORG-B CERT",
+    "tlp": "AMBER",
+    "confidence": 82,
+    "severity": "HIGH",
+    "firstSeen": "2026-04-21T09:44:00Z",
+    "tags": ["bruteforce", "identity", "ssh"]
+  },
+  {
+    "value": "malware-control.example",
+    "type": "domain",
+    "sourceOrg": "ORG-A SOC",
+    "tlp": "GREEN",
+    "confidence": 92,
+    "severity": "CRITICAL",
+    "firstSeen": "2026-04-22T11:30:00Z",
+    "tags": ["c2", "ransomware"]
+  },
+  {
+    "value": "https://malware-control.example/update?id=analyst@example.org",
+    "type": "url",
+    "sourceOrg": "ORG-C DFIR",
+    "tlp": "AMBER",
+    "confidence": 76,
+    "severity": "CRITICAL",
+    "firstSeen": "2026-04-22T12:05:00Z",
+    "tags": ["c2", "ransomware", "credential-access"]
+  },
+  {
+    "value": "44d88612fea8a8f36de82e1278abb02f",
+    "type": "md5",
+    "sourceOrg": "ORG-B CERT",
+    "tlp": "GREEN",
+    "confidence": 67,
+    "severity": "MEDIUM",
+    "firstSeen": "2026-04-20T18:40:00Z",
+    "tags": ["malware", "dropper"]
+  },
+  {
+    "value": "rule Suspicious_Powershell_B64 { strings: $a = \"-enc\" nocase condition: $a }",
+    "type": "yara",
+    "sourceOrg": "ORG-C DFIR",
+    "tlp": "GREEN",
+    "confidence": 71,
+    "severity": "MEDIUM",
+    "firstSeen": "2026-04-23T08:10:00Z",
+    "tags": ["yara", "powershell"]
+  }
+]

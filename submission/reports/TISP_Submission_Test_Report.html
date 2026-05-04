@@ -1,0 +1,379 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>SentinelMesh — Submission Testing Report</title>
+    <style>
+      :root {
+        --bg: #f6f8fb;
+        --ink: #172033;
+        --muted: #5f6b7a;
+        --line: #d9e0ea;
+        --card: #ffffff;
+        --blue: #2563eb;
+        --green: #059669;
+        --red: #dc2626;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: Arial, Helvetica, sans-serif;
+        line-height: 1.45;
+      }
+      main {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 36px;
+      }
+      .cover {
+        background: linear-gradient(135deg, #101827, #172554);
+        color: white;
+        border-radius: 12px;
+        padding: 36px;
+        margin-bottom: 24px;
+      }
+      .cover p { color: #cbd5e1; max-width: 760px; }
+      h1, h2, h3 { margin: 0; }
+      h1 { font-size: 34px; letter-spacing: -0.02em; }
+      h2 { font-size: 22px; margin: 28px 0 12px; }
+      h3 { font-size: 16px; margin: 18px 0 8px; }
+      p { margin: 8px 0 12px; color: var(--muted); }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+      }
+      .card {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 16px;
+      }
+      .metric {
+        font-size: 28px;
+        font-weight: 800;
+        color: var(--ink);
+      }
+      .label {
+        font-size: 12px;
+        color: var(--muted);
+        text-transform: uppercase;
+        font-weight: 700;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        overflow: hidden;
+      }
+      th, td {
+        border-bottom: 1px solid var(--line);
+        padding: 10px 12px;
+        text-align: left;
+        vertical-align: top;
+        font-size: 13px;
+      }
+      th {
+        background: #eef3fb;
+        color: #334155;
+        font-size: 12px;
+        text-transform: uppercase;
+      }
+      tr:last-child td { border-bottom: 0; }
+      .pass {
+        display: inline-block;
+        color: var(--green);
+        background: #ecfdf5;
+        border: 1px solid #bbf7d0;
+        border-radius: 999px;
+        padding: 3px 8px;
+        font-weight: 700;
+      }
+      .pending {
+        display: inline-block;
+        color: var(--red);
+        background: #fef2f2;
+        border: 1px solid #fecaca;
+        border-radius: 999px;
+        padding: 3px 8px;
+        font-weight: 700;
+      }
+      code {
+        background: #eef3fb;
+        border: 1px solid var(--line);
+        border-radius: 5px;
+        padding: 1px 5px;
+        font-size: 12px;
+      }
+      pre {
+        background: #101827;
+        color: #e5e7eb;
+        border-radius: 10px;
+        padding: 14px;
+        overflow: hidden;
+        font-size: 12px;
+      }
+      figure {
+        margin: 16px 0;
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 12px;
+        page-break-inside: avoid;
+      }
+      figure img {
+        display: block;
+        width: 100%;
+        border-radius: 8px;
+        border: 1px solid var(--line);
+      }
+      figcaption {
+        margin-top: 8px;
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .two-col {
+        display: grid;
+        grid-template-columns: 1.6fr 1fr;
+        gap: 16px;
+      }
+      .note {
+        border-left: 4px solid var(--blue);
+        background: #eff6ff;
+        padding: 12px 14px;
+        border-radius: 8px;
+        color: #1e3a8a;
+      }
+      @media print {
+        body { background: white; }
+        main { max-width: none; padding: 18mm; }
+        .cover, .card, figure, table { break-inside: avoid; }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <section class="cover">
+        <h1>SentinelMesh — Submission Testing Report</h1>
+        <p>
+          Project: Implementing Security Measures within a Threat Intelligence Sharing Platform.
+          Prepared for final academic submission evidence and demo readiness.
+        </p>
+        <p><strong>Author:</strong> Gururaj Seethuru &nbsp; <strong>Date:</strong> April 28, 2026</p>
+      </section>
+
+      <section class="grid">
+        <div class="card"><div class="label">Dashboard</div><div class="metric">Pass</div><p>Lint and production build completed.</p></div>
+        <div class="card"><div class="label">CTI Tools</div><div class="metric">Pass</div><p>STIX export and threat report self-test completed.</p></div>
+        <div class="card"><div class="label">Infra Config</div><div class="metric">Pass</div><p>Lab and production Compose configurations validated.</p></div>
+        <div class="card"><div class="label">Navigation</div><div class="metric">Pass</div><p>All dashboard modules opened from the sidebar.</p></div>
+      </section>
+
+      <h2>Executive Summary</h2>
+      <p>
+        The codebase is ready for submission as a project package. The React dashboard has been redesigned into a cleaner SOC-style interface,
+        the automated analysis tools generate normalized and anonymized intelligence outputs, and both the lab and production Docker Compose
+        configurations validate successfully with required secrets externalized.
+      </p>
+      <p>
+        The project now includes a one-click local installer and an in-app Technology Blueprint module. This gives evaluators a direct path from
+        download to working dashboard, plus a clear explanation of the technology stack, configuration levels, and demo story.
+      </p>
+      <p class="note">
+        Live Docker deployment was not executed in this pass because it starts multiple local services and may pull large container images.
+        The safe validation completed here includes <code>docker compose --env-file .env.example config</code> and
+        <code>docker compose -f docker-compose.yml -f docker-compose.prod.yml --env-file .env.prod.example config</code>.
+        A live lab run can be performed after explicit approval.
+      </p>
+
+      <h2>One-Click Installation</h2>
+      <div class="two-col">
+        <div class="card">
+          <h3>Default Demo Path</h3>
+          <p>Windows users can double-click <code>Start-SentinelMesh.bat</code> or run <code>.\install.ps1</code>.</p>
+          <p>The installer checks Node.js/npm, installs dashboard packages, generates a local lab <code>.env</code>, runs CTI tool tests, builds the dashboard, starts the local command center, and opens <code>http://127.0.0.1:5173</code>.</p>
+        </div>
+        <div class="card">
+          <h3>Advanced Modes</h3>
+          <pre>.\install.ps1 -Mode Validate
+.\install.ps1 -Mode Lab
+.\install.ps1 -Mode Lab -StartLabStack
+.\install.ps1 -Mode Production</pre>
+        </div>
+      </div>
+
+      <h2>Technology Stack</h2>
+      <table>
+        <thead>
+          <tr><th>Layer</th><th>Technologies</th><th>Purpose</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Command center</td>
+            <td>React 19, Vite, Tailwind CSS 4, Framer Motion, Lucide, Recharts</td>
+            <td>SOC-style dashboard for monitoring, reporting, and project demonstration.</td>
+          </tr>
+          <tr>
+            <td>CTI platform</td>
+            <td>MISP, OpenCTI, TheHive, STIX 2.1, TAXII-ready exports</td>
+            <td>Threat ingestion, relationship analysis, intelligence sharing, and response coordination.</td>
+          </tr>
+          <tr>
+            <td>Security controls</td>
+            <td>Keycloak, RBAC, MFA plan, TLS reverse proxy, AES-256 storage plan, anonymization</td>
+            <td>Identity, authorization, privacy, and secure sharing governance.</td>
+          </tr>
+          <tr>
+            <td>Infrastructure</td>
+            <td>Docker Compose, Nginx, PostgreSQL, Redis, Elasticsearch, RabbitMQ, MinIO</td>
+            <td>Reproducible lab stack and production-ready deployment overlay.</td>
+          </tr>
+          <tr>
+            <td>Evidence and automation</td>
+            <td>Node.js CTI tools, PowerShell validators, browser smoke tests, Edge screenshots/PDF</td>
+            <td>Repeatable proof that the project builds, validates, and covers the assignment requirements.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>Validation Matrix</h2>
+      <table>
+        <thead>
+          <tr><th>Area</th><th>Command / Method</th><th>Evidence</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Dashboard lint</td>
+            <td><code>npm run lint</code></td>
+            <td><code>submission-evidence/logs/01-dashboard-lint.log</code></td>
+            <td><span class="pass">Passed</span></td>
+          </tr>
+          <tr>
+            <td>Dashboard production build</td>
+            <td><code>npm run build</code></td>
+            <td><code>submission-evidence/logs/02-dashboard-build.log</code></td>
+            <td><span class="pass">Passed</span></td>
+          </tr>
+          <tr>
+            <td>Automated analysis tools</td>
+            <td><code>npm test</code></td>
+            <td><code>tisp-tools/out/stix-bundle.json</code>, <code>tisp-tools/out/threat-report.json</code></td>
+            <td><span class="pass">Passed</span></td>
+          </tr>
+          <tr>
+            <td>Environment validation</td>
+            <td><code>.\validate-env.ps1 .env.example -AllowPlaceholders</code></td>
+            <td><code>submission-evidence/logs/04-env-structure-validation.log</code></td>
+            <td><span class="pass">Passed</span></td>
+          </tr>
+          <tr>
+            <td>Docker Compose config</td>
+            <td><code>docker compose --env-file .env.example config</code></td>
+            <td><code>submission-evidence/logs/05-compose-config-validation.log</code></td>
+            <td><span class="pass">Passed</span></td>
+          </tr>
+          <tr>
+            <td>Production environment validation</td>
+            <td><code>.\validate-env.ps1 .env.prod.example -Profile prod -AllowPlaceholders</code></td>
+            <td><code>submission-evidence/logs/06-prod-env-structure-validation.log</code></td>
+            <td><span class="pass">Passed</span></td>
+          </tr>
+          <tr>
+            <td>Production Compose overlay</td>
+            <td><code>docker compose -f docker-compose.yml -f docker-compose.prod.yml --env-file .env.prod.example config</code></td>
+            <td><code>submission-evidence/logs/07-prod-compose-config-validation.log</code></td>
+            <td><span class="pass">Passed</span></td>
+          </tr>
+          <tr>
+            <td>Production exposure guard</td>
+            <td><code>.\validate-prod-compose.ps1 .env.prod.example</code></td>
+            <td><code>submission-evidence/logs/08-prod-compose-exposure-validation.log</code></td>
+            <td><span class="pass">Passed</span></td>
+          </tr>
+          <tr>
+            <td>Container image manifests</td>
+            <td><code>.\validate-images.ps1 .env.prod.example -Production</code></td>
+            <td><code>submission-evidence/logs/10-image-manifest-validation.log</code></td>
+            <td><span class="pass">Passed</span></td>
+          </tr>
+          <tr>
+            <td>Sidebar navigation smoke test</td>
+            <td><code>node scripts/browser-smoke.mjs</code> over local Vite app</td>
+            <td><code>submission-evidence/logs/09-sidebar-navigation-smoke.json</code></td>
+            <td><span class="pass">Passed</span></td>
+          </tr>
+          <tr>
+            <td>Full live Docker lab / production pilot</td>
+            <td><code>docker compose up -d</code> or production overlay deploy</td>
+            <td>Requires real secrets, DNS, TLS certificates, and approval before starting services</td>
+            <td><span class="pending">Pending approval</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>Dashboard Evidence</h2>
+      <figure>
+        <img src="screenshots/final-dashboard-desktop-1440x900.png" alt="Desktop dashboard screenshot" />
+        <figcaption>Desktop viewport: SentinelMesh Command Center with CTI exchange flow, threat stream, and submission status.</figcaption>
+      </figure>
+      <figure>
+        <img src="screenshots/final-dashboard-mobile-390x844.png" alt="Mobile dashboard screenshot" />
+        <figcaption>Mobile viewport: responsive sidebar rail and single-column KPI layout without horizontal clipping.</figcaption>
+      </figure>
+      <figure>
+        <img src="screenshots/architecture-map-desktop.png" alt="Architecture map screenshot" />
+        <figcaption>Architecture map: connected CTI topology from sources through governance, analysis, response, and persistence layers.</figcaption>
+      </figure>
+      <figure>
+        <img src="screenshots/opencti-dataflow-desktop-1440x900.png" alt="Animated OpenCTI data-flow screenshot" />
+        <figcaption>OpenCTI graph: animated STIX relationship flow with source report, campaign, malware, infrastructure, indicator, and TheHive response case nodes.</figcaption>
+      </figure>
+
+      <h2>Functional Navigation Evidence</h2>
+      <table>
+        <thead>
+          <tr><th>Sidebar Item</th><th>Expected View</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Architecture Map</td><td>SYSTEM_TOPOLOGY</td><td><span class="pass">Passed</span></td></tr>
+          <tr><td>MISP Ingestion</td><td>MISP_INTEL_MATRIX</td><td><span class="pass">Passed</span></td></tr>
+          <tr><td>OpenCTI Graph</td><td>OPEN_CTI_NEXUS</td><td><span class="pass">Passed</span></td></tr>
+          <tr><td>TheHive Cases</td><td>THE_HIVE_OPERATIONS</td><td><span class="pass">Passed</span></td></tr>
+          <tr><td>Identity & RBAC</td><td>IDENTITY_MESH</td><td><span class="pass">Passed</span></td></tr>
+          <tr><td>Automation</td><td>AUTOMATION_CONTROL</td><td><span class="pass">Passed</span></td></tr>
+          <tr><td>Executive Dashboard</td><td>SENTINELMESH_COMMAND_CENTER</td><td><span class="pass">Passed</span></td></tr>
+        </tbody>
+      </table>
+
+      <h2>Project Deliverables</h2>
+      <table>
+        <thead>
+          <tr><th>Deliverable</th><th>Repository Evidence</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Architecture and deployment documentation</td><td><code>submission/deliverables/D1_Architecture_Deployment.docx</code>, <code>tisp-infra/docker-compose.yml</code></td></tr>
+          <tr><td>Data sharing agreement templates</td><td><code>submission/deliverables/D2_Data_Sharing_Agreements.docx</code></td></tr>
+          <tr><td>Configuration guides</td><td><code>submission/deliverables/D3_Configuration_Guides.docx</code>, <code>tisp-infra/.env.example</code></td></tr>
+          <tr><td>Automated analysis tools</td><td><code>tisp-tools/src/normalize-stix.mjs</code>, <code>tisp-tools/src/pattern-detection.mjs</code></td></tr>
+          <tr><td>Integration manuals</td><td><code>submission/deliverables/D5_Integration_Manuals.docx</code></td></tr>
+          <tr><td>Reporting dashboards</td><td><code>tisp-command-center</code>, dashboard screenshots in this report</td></tr>
+          <tr><td>Compliance documentation</td><td><code>submission/deliverables/D7_Compliance_Documentation.docx</code>, <code>docs/PROJECT_COMPLETION_MATRIX.md</code></td></tr>
+          <tr><td>User training guides</td><td><code>submission/deliverables/D8_User_Training_Guide.docx</code></td></tr>
+          <tr><td>Production operations</td><td><code>docs/PRODUCTION_READINESS_RUNBOOK.md</code>, <code>docs/PRODUCTION_ACCEPTANCE_CHECKLIST.md</code>, <code>docs/BACKUP_RESTORE_GUIDE.md</code></td></tr>
+        </tbody>
+      </table>
+
+      <h2>Conclusion</h2>
+      <p>
+        The project is suitable for academic submission after one final optional live-lab demonstration. The required written deliverables are present,
+        the dashboard is buildable and visually polished, the analysis scripts produce output evidence, and the lab plus production infrastructure
+        configurations are validated. Real production exposure should wait until the runbook's DNS, TLS, MFA, RBAC, backup, restore, and smoke-test
+        gates are completed with live evidence.
+      </p>
+    </main>
+  </body>
+</html>

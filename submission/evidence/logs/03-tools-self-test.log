@@ -1,0 +1,13 @@
+﻿# 03-tools-self-test
+WorkingDirectory: C:\Users\marco\Documents\Codex\2026-04-28\https-github-com-gururajseethur-tisp-nexus\tisp-tools
+StartedAt: 2026-04-30T07:54:31
+
+
+> tisp-tools@1.0.0 test
+> node src/self-test.mjs
+
+Wrote 6 STIX indicators to out/stix-bundle.json
+Wrote TISP pattern report to out/threat-report.json
+TISP tools self-test passed.
+
+ExitCode: 0

@@ -1,0 +1,82 @@
+SentinelMesh Docker Stack — FINAL DEPLOYMENT LOGS
+================================================
+Last Updated: 2026-05-01T14:30:00Z
+Docker Engine: 29.3.1 | Docker Compose: v5.1.1
+Platform: Windows 11 Home 10.0.26200
+
+TISP STACK STATUS (docker compose ps) — ALL 13 SERVICES UP:
+-------------------------------------------------------------
+NAME                                 STATUS          PORTS
+tisp-infra-keycloak-1                Up 9 hours      0.0.0.0:8180->8080/tcp, [::]:8180->8080/tcp
+tisp-infra-keycloak-db-1             Up 9 hours      5432/tcp
+tisp-infra-misp-1                    Up 9 hours      0.0.0.0:4443->443/tcp, [::]:4443->443/tcp
+tisp-infra-misp-modules-1            Up 9 hours
+tisp-infra-misp-mysql-1              Up 9 hours      3306/tcp, 33060/tcp
+tisp-infra-misp-redis-1              Up 9 hours      6379/tcp
+tisp-infra-opencti-1                 Up              0.0.0.0:8080->4000/tcp, [::]:8080->4000/tcp
+tisp-infra-opencti-elasticsearch-1   Up 3 hours      9200/tcp, 9300/tcp
+tisp-infra-opencti-minio-1           Up 9 hours      9000/tcp
+tisp-infra-opencti-rabbitmq-1        Up 9 hours      4369/tcp, 5671-5672/tcp, 15671-15672/tcp, 15691-15692/tcp, 25672/tcp
+tisp-infra-opencti-redis-1           Up 9 hours      6379/tcp
+tisp-infra-thehive-1                 Up 2 hours      0.0.0.0:9000->9000/tcp, [::]:9000->9000/tcp
+tisp-infra-thehive-es-1              Up 3 hours      9200/tcp, 9300/tcp
+
+
+SERVICES SUMMARY:
+------------------
+RUNNING (13/13): COMPLETE ✓
+  ✓ tisp-infra-keycloak-1           → http://localhost:8180   HTTP 200 ✓ CONFIRMED LIVE
+  ✓ tisp-infra-keycloak-db-1        (internal postgres)
+  ✓ tisp-infra-misp-1               → https://localhost:4443  HTTP 200 ✓ CONFIRMED LIVE (login successful)
+  ✓ tisp-infra-misp-modules-1       (internal)
+  ✓ tisp-infra-misp-mysql-1         (internal)
+  ✓ tisp-infra-misp-redis-1         (internal)
+  ✓ tisp-infra-opencti-1            → http://localhost:8080   HTTP 200 ✓ CONFIRMED LIVE (login to /dashboard)
+  ✓ tisp-infra-opencti-elasticsearch-1 (internal)
+  ✓ tisp-infra-opencti-minio-1      (internal)
+  ✓ tisp-infra-opencti-rabbitmq-1   (internal)
+  ✓ tisp-infra-opencti-redis-1      (internal)
+  ✓ tisp-infra-thehive-1            → http://localhost:9000   HTTP 200 ✓ CONFIRMED LIVE
+  ✓ tisp-infra-thehive-es-1         (internal)
+
+NOTE: n8n defined in docker-compose.yml but not started — host port 5678 conflict
+      with existing n8nprojects-n8n-1 container. Image (2.01GB) is cached locally.
+
+SCREENSHOTS CAPTURED (19 total):
+----------------------------------
+  architecture-map-desktop.png           Platform architecture map
+  final-dashboard-desktop-1440x900.png   TISP dashboard (full HD)
+  final-dashboard-mobile-390x844.png     TISP dashboard (mobile)
+  opencti-dataflow-desktop-1440x900.png  OpenCTI animated data flow
+  opencti-graph-desktop-1440x900.png     OpenCTI threat correlation graph
+  dashboard-overview-1440x900.png        Dashboard overview panel
+  keycloak-admin-login-1440x900.png      Keycloak login page (LIVE)
+  keycloak-admin-console-1440x900.png    Keycloak admin console (LIVE)
+  keycloak-auth-flows-1440x900.png       Keycloak authentication flows (LIVE)
+  misp-login-page-1440x900.png           MISP login page (LIVE)
+  misp-login-live-1440x900.png           MISP login page (LIVE, fresh capture)
+  misp-post-login-1440x900.png           MISP dashboard after login (LIVE)
+  misp-events-1440x900.png               MISP events index (LIVE)
+  opencti-platform-1440x900.png          OpenCTI platform startup
+  opencti-live-1440x900.png              OpenCTI live (LIVE)
+  opencti-login-1440x900.png             OpenCTI login page (LIVE)
+  opencti-dashboard-1440x900.png         OpenCTI dashboard after login (LIVE)
+  thehive-dashboard-1440x900.png         TheHive dashboard
+  thehive-live-1440x900.png              TheHive incident response (LIVE)
+
+CLI VERIFICATION COMMANDS:
+---------------------------
+# Verify all services are up:
+docker compose -f tisp-infra/docker-compose.yml ps
+
+# Check OpenCTI:
+curl http://localhost:8080/
+
+# Check TheHive:
+curl http://localhost:9000/
+
+# Check Keycloak:
+curl http://localhost:8180/
+
+# Check MISP (from inside container):
+docker exec tisp-infra-misp-1 curl -sk -o /dev/null -w "%{http_code}" https://127.0.0.1/users/login

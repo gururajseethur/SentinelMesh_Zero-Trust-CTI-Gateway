@@ -1,0 +1,15 @@
+node_modules/
+.env
+.env.*
+!.env.example
+!.env.prod.example
+*.log
+!submission/evidence/logs/*.log
+qa-screenshots/
+tisp-command-center/dist/
+tisp-command-center/vite-dev*.log
+tisp-infra/certs/
+tisp-infra/backups/
+archive/
+.DS_Store
+execution.md

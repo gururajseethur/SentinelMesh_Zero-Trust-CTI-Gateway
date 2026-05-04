@@ -1,0 +1,126 @@
+{
+  "generatedAt": "2026-04-28T00:00:00.000Z",
+  "summary": {
+    "indicatorCount": 6,
+    "sourceCount": 3,
+    "correlatedIndicatorCount": 3,
+    "emergingThemeCount": 6
+  },
+  "correlatedIndicators": [
+    {
+      "type": "domain",
+      "value": "malware-control.example",
+      "valueHash": "e4604f08a3eb0212",
+      "sourceCount": 1,
+      "sources": [
+        "ORG-A SOC"
+      ],
+      "maxSeverity": "CRITICAL",
+      "maxConfidence": 92,
+      "tags": [
+        "c2",
+        "ransomware"
+      ]
+    },
+    {
+      "type": "url",
+      "value": "https://malware-control.example/update?redacted=4ca6d94b5c18",
+      "valueHash": "04115d5f91c3125b",
+      "sourceCount": 1,
+      "sources": [
+        "ORG-C DFIR"
+      ],
+      "maxSeverity": "CRITICAL",
+      "maxConfidence": 76,
+      "tags": [
+        "c2",
+        "credential-access",
+        "ransomware"
+      ]
+    },
+    {
+      "type": "ipv4",
+      "value": "203.0.113.0/24",
+      "valueHash": "94c6699ed4d8ee68",
+      "sourceCount": 2,
+      "sources": [
+        "ORG-A SOC",
+        "ORG-B CERT"
+      ],
+      "maxSeverity": "HIGH",
+      "maxConfidence": 88,
+      "tags": [
+        "bruteforce",
+        "identity",
+        "ssh"
+      ]
+    }
+  ],
+  "emergingThemes": [
+    {
+      "tag": "c2",
+      "count": 2,
+      "sourceCount": 2,
+      "maxSeverity": "CRITICAL"
+    },
+    {
+      "tag": "ransomware",
+      "count": 2,
+      "sourceCount": 2,
+      "maxSeverity": "CRITICAL"
+    },
+    {
+      "tag": "bruteforce",
+      "count": 2,
+      "sourceCount": 2,
+      "maxSeverity": "HIGH"
+    },
+    {
+      "tag": "identity",
+      "count": 2,
+      "sourceCount": 2,
+      "maxSeverity": "HIGH"
+    },
+    {
+      "tag": "ssh",
+      "count": 2,
+      "sourceCount": 2,
+      "maxSeverity": "HIGH"
+    },
+    {
+      "tag": "credential-access",
+      "count": 1,
+      "sourceCount": 1,
+      "maxSeverity": "CRITICAL"
+    }
+  ],
+  "sourceReliability": [
+    {
+      "sourceOrg": "ORG-A SOC",
+      "indicatorCount": 2,
+      "averageConfidence": 90,
+      "highSeverityCount": 2,
+      "reliabilityScore": 98
+    },
+    {
+      "sourceOrg": "ORG-B CERT",
+      "indicatorCount": 2,
+      "averageConfidence": 74.5,
+      "highSeverityCount": 1,
+      "reliabilityScore": 78.5
+    },
+    {
+      "sourceOrg": "ORG-C DFIR",
+      "indicatorCount": 2,
+      "averageConfidence": 73.5,
+      "highSeverityCount": 1,
+      "reliabilityScore": 77.5
+    }
+  ],
+  "recommendedActions": [
+    "Promote multi-source high-confidence indicators to MISP sharing groups.",
+    "Create TheHive cases for CRITICAL indicators tagged c2, ransomware, or credential-access.",
+    "Push sanitized STIX bundles to TAXII collections for partner consumption.",
+    "Review low-confidence single-source indicators before external sharing."
+  ]
+}

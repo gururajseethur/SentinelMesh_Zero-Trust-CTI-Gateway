@@ -1,0 +1,7 @@
+﻿# 08-prod-compose-exposure-validation
+WorkingDirectory: C:\Users\marco\Documents\Codex\2026-04-28\https-github-com-gururajseethur-tisp-nexus\tisp-infra
+StartedAt: 2026-04-30T07:54:33
+
+Production Compose exposure validation passed. Only reverse-proxy publishes host ports.
+
+ExitCode: 0

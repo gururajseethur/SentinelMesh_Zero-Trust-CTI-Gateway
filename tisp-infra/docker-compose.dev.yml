@@ -1,0 +1,23 @@
+# Development overlay for TISP Nexus.
+# Overrides the base compose with settings that are convenient for local development
+# but MUST NOT be used in any production or shared environment.
+#
+# Usage:
+#   docker compose -f docker-compose.yml -f docker-compose.dev.yml up
+#
+# What this overlay does (and why each is dev-only):
+#   - Keycloak: uses start-dev (disables hostname verification, enables dev console)
+#   - tisp-proxy: publishes port 3001 to the host for direct curl testing
+#   - All services: publishes ports to the host for direct access
+
+services:
+  keycloak:
+    # start-dev skips TLS, hostname checks, and caching — never use in production
+    command: start-dev
+
+  # Publish tisp-proxy for direct host access during development.
+  # WARNING: JWT verification is syntactic only. Do not expose this port
+  # outside your local machine. See tisp-proxy/README.md §Security Limitations.
+  tisp-proxy:
+    ports:
+      - "127.0.0.1:3001:3001"

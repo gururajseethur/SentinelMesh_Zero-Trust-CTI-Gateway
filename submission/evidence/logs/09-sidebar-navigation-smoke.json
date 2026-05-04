@@ -1,0 +1,70 @@
+{
+  "url": "http://127.0.0.1:5173/",
+  "generatedAt": "2026-05-01T05:49:21.939Z",
+  "results": [
+    {
+      "buttonTitle": "Technology Blueprint",
+      "expectedTitle": "TECHNOLOGY_BLUEPRINT",
+      "actualTitle": null,
+      "status": "failed",
+      "reason": "button not found"
+    },
+    {
+      "buttonTitle": "Architecture Map",
+      "expectedTitle": "SYSTEM_TOPOLOGY",
+      "actualTitle": null,
+      "status": "failed",
+      "reason": "button not found"
+    },
+    {
+      "buttonTitle": "MISP Ingestion",
+      "expectedTitle": "MISP_INTEL_MATRIX",
+      "actualTitle": null,
+      "status": "failed",
+      "reason": "button not found"
+    },
+    {
+      "buttonTitle": "OpenCTI Graph",
+      "expectedTitle": "OPEN_CTI_NEXUS",
+      "actualTitle": null,
+      "status": "failed",
+      "reason": "button not found"
+    },
+    {
+      "buttonTitle": "TheHive Cases",
+      "expectedTitle": "THE_HIVE_OPERATIONS",
+      "actualTitle": null,
+      "status": "failed",
+      "reason": "button not found"
+    },
+    {
+      "buttonTitle": "Identity & RBAC",
+      "expectedTitle": "IDENTITY_MESH",
+      "actualTitle": null,
+      "status": "failed",
+      "reason": "button not found"
+    },
+    {
+      "buttonTitle": "Automation",
+      "expectedTitle": "AUTOMATION_CONTROL",
+      "actualTitle": null,
+      "status": "failed",
+      "reason": "button not found"
+    },
+    {
+      "buttonTitle": "Project settings",
+      "expectedTitle": "PROJECT_SETTINGS",
+      "actualTitle": null,
+      "status": "failed",
+      "reason": "button not found"
+    },
+    {
+      "buttonTitle": "Executive Dashboard",
+      "expectedTitle": "SENTINELMESH_COMMAND_CENTER",
+      "actualTitle": null,
+      "status": "failed",
+      "reason": "button not found"
+    }
+  ],
+  "consoleProblems": 0
+}

@@ -1,0 +1,14 @@
+{
+  "name": "tisp-tools",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "normalize": "node src/normalize-stix.mjs examples/sample-iocs.json out/stix-bundle.json",
+    "analyze": "node src/pattern-detection.mjs examples/sample-iocs.json out/threat-report.json",
+    "test": "node src/self-test.mjs",
+    "import": "node src/import-to-misp.mjs",
+    "pipeline": "npm run normalize && npm run import",
+    "serve": "node src/taxii-server.mjs"
+  }
+}

@@ -1,0 +1,107 @@
+{
+  "name": "MISP to OpenCTI",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 15
+            }
+          ]
+        }
+      },
+      "id": "misp-poll-schedule",
+      "name": "Poll MISP",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        220,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "url": "http://misp:443/events/index",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "={{$env.MISP_API_KEY}}"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ]
+        }
+      },
+      "id": "misp-events-request",
+      "name": "Fetch MISP Events",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        480,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://opencti:4000/graphql",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{$env.OPENCTI_TOKEN}}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "jsonBody": "={\"query\":\"mutation IndicatorAdd($input: IndicatorAddInput!) { indicatorAdd(input: $input) { id name } }\",\"variables\":{\"input\":{\"name\":\"MISP synced indicator\",\"pattern\":\"[artifact:payload_bin MATCHES 'misp-sync']\",\"pattern_type\":\"stix\",\"x_opencti_main_observable_type\":\"Artifact\"}}}"
+      },
+      "id": "opencti-indicator-create",
+      "name": "Create OpenCTI Indicator",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        740,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Poll MISP": {
+      "main": [
+        [
+          {
+            "node": "Fetch MISP Events",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch MISP Events": {
+      "main": [
+        [
+          {
+            "node": "Create OpenCTI Indicator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {}
+}

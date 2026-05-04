@@ -1,0 +1,20 @@
+﻿# 10-image-manifest-validation
+WorkingDirectory: C:\Users\marco\Documents\Codex\2026-04-28\https-github-com-gururajseethur-tisp-nexus\tisp-infra
+StartedAt: 2026-04-30T07:54:33
+
+PASS image manifest: docker.elastic.co/elasticsearch/elasticsearch:8.13.0
+PASS image manifest: ghcr.io/misp/misp-docker/misp-core:v2.5.35
+PASS image manifest: ghcr.io/misp/misp-docker/misp-modules:v3.0.7
+PASS image manifest: minio/minio:RELEASE.2025-04-22T22-12-26Z
+PASS image manifest: mysql:8
+PASS image manifest: n8nio/n8n:1.88.0
+PASS image manifest: nginx:1.27-alpine
+PASS image manifest: opencti/platform:6.0.0
+PASS image manifest: postgres:16-alpine
+PASS image manifest: quay.io/keycloak/keycloak:24.0
+PASS image manifest: rabbitmq:3.13-management-alpine
+PASS image manifest: redis:7-alpine
+PASS image manifest: strangebee/thehive:5.2
+Image manifest validation passed for 13 image(s).
+
+ExitCode: 0

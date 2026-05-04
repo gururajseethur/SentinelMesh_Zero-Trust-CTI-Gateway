@@ -1,0 +1,679 @@
+{
+  "generatedAt": "2026-05-01T05:22:29.149Z",
+  "summary": {
+    "indicatorCount": 50,
+    "sourceCount": 3,
+    "correlatedIndicatorCount": 22,
+    "emergingThemeCount": 41
+  },
+  "correlatedIndicators": [
+    {
+      "type": "ipv4",
+      "value": "203.0.113.0/24",
+      "valueHash": "94c6699ed4d8ee68",
+      "sourceCount": 3,
+      "sources": [
+        "ORG-A SOC",
+        "ORG-B CERT",
+        "ORG-C DFIR"
+      ],
+      "maxSeverity": "CRITICAL",
+      "maxConfidence": 95,
+      "tags": [
+        "anonymization",
+        "apt29",
+        "bruteforce",
+        "c2",
+        "exfiltration",
+        "exploitation-attempt",
+        "identity",
+        "initial-reconnaissance",
+        "lateral-movement",
+        "persistence",
+        "proxy",
+        "ransomware",
+        "scanning",
+        "ssh",
+        "tor-exit",
+        "vuln-scan"
+      ]
+    },
+    {
+      "type": "ipv4",
+      "value": "198.51.100.0/24",
+      "valueHash": "9e6315b575452645",
+      "sourceCount": 3,
+      "sources": [
+        "ORG-A SOC",
+        "ORG-B CERT",
+        "ORG-C DFIR"
+      ],
+      "maxSeverity": "CRITICAL",
+      "maxConfidence": 96,
+      "tags": [
+        "active",
+        "apt29",
+        "bruteforce",
+        "c2",
+        "command-control",
+        "confirmed",
+        "credential-access",
+        "identity",
+        "initial-access",
+        "port-scan",
+        "rdp",
+        "reconnaissance",
+        "scanning",
+        "spear-phishing",
+        "ssh"
+      ]
+    },
+    {
+      "type": "domain",
+      "value": "malware-control.example",
+      "valueHash": "e4604f08a3eb0212",
+      "sourceCount": 2,
+      "sources": [
+        "ORG-A SOC",
+        "ORG-B CERT"
+      ],
+      "maxSeverity": "CRITICAL",
+      "maxConfidence": 90,
+      "tags": [
+        "apt29",
+        "c2",
+        "ransomware"
+      ]
+    },
+    {
+      "type": "domain",
+      "value": "exfil-staging.example",
+      "valueHash": "3d15e1aae00a0dc4",
+      "sourceCount": 2,
+      "sources": [
+        "ORG-A SOC",
+        "ORG-C DFIR"
+      ],
+      "maxSeverity": "CRITICAL",
+      "maxConfidence": 94,
+      "tags": [
+        "apt29",
+        "data-theft",
+        "exfiltration"
+      ]
+    },
+    {
+      "type": "domain",
+      "value": "ransom-payment.example",
+      "valueHash": "de2606e80562461c",
+      "sourceCount": 2,
+      "sources": [
+        "ORG-A SOC",
+        "ORG-C DFIR"
+      ],
+      "maxSeverity": "CRITICAL",
+      "maxConfidence": 97,
+      "tags": [
+        "impact",
+        "payment-site",
+        "ransomware"
+      ]
+    },
+    {
+      "type": "domain",
+      "value": "backdoor-listener.example",
+      "valueHash": "136949a95e8cac4f",
+      "sourceCount": 2,
+      "sources": [
+        "ORG-A SOC",
+        "ORG-B CERT"
+      ],
+      "maxSeverity": "CRITICAL",
+      "maxConfidence": 91,
+      "tags": [
+        "apt29",
+        "backdoor",
+        "persistence"
+      ]
+    },
+    {
+      "type": "url",
+      "value": "https://malware-control.example/update?redacted=289539f21c57",
+      "valueHash": "7917ba7258271f9e",
+      "sourceCount": 1,
+      "sources": [
+        "ORG-C DFIR"
+      ],
+      "maxSeverity": "CRITICAL",
+      "maxConfidence": 78,
+      "tags": [
+        "c2",
+        "credential-access",
+        "ransomware"
+      ]
+    },
+    {
+      "type": "yara",
+      "value": "rule Ransom_Note_Drop { strings: $r = \"YOUR FILES ARE ENCRYPTED\" nocase condition: $r }",
+      "valueHash": "c45fcf0a94101f9f",
+      "sourceCount": 1,
+      "sources": [
+        "ORG-A SOC"
+      ],
+      "maxSeverity": "CRITICAL",
+      "maxConfidence": 89,
+      "tags": [
+        "impact",
+        "ransomware",
+        "yara"
+      ]
+    },
+    {
+      "type": "sha256",
+      "value": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "valueHash": "cd372fb85148700f",
+      "sourceCount": 1,
+      "sources": [
+        "ORG-B CERT"
+      ],
+      "maxSeverity": "CRITICAL",
+      "maxConfidence": 88,
+      "tags": [
+        "encryption",
+        "malware",
+        "ransomware"
+      ]
+    },
+    {
+      "type": "yara",
+      "value": "rule Cobalt_Strike_Beacon { strings: $cs = { 4D 5A } $cfg = \"ReflectiveDllInjection\" condition: $cs and $cfg }",
+      "valueHash": "0bacc4f84094481d",
+      "sourceCount": 1,
+      "sources": [
+        "ORG-A SOC"
+      ],
+      "maxSeverity": "CRITICAL",
+      "maxConfidence": 88,
+      "tags": [
+        "apt29",
+        "cobalt-strike",
+        "post-exploitation",
+        "yara"
+      ]
+    },
+    {
+      "type": "url",
+      "value": "https://exfil-staging.example/upload",
+      "valueHash": "0b139445586bd9d3",
+      "sourceCount": 1,
+      "sources": [
+        "ORG-B CERT"
+      ],
+      "maxSeverity": "CRITICAL",
+      "maxConfidence": 92,
+      "tags": [
+        "apt29",
+        "data-theft",
+        "exfiltration"
+      ]
+    },
+    {
+      "type": "domain",
+      "value": "lateral-move-host.example",
+      "valueHash": "4fe79ef8e2b31771",
+      "sourceCount": 1,
+      "sources": [
+        "ORG-C DFIR"
+      ],
+      "maxSeverity": "CRITICAL",
+      "maxConfidence": 89,
+      "tags": [
+        "apt29",
+        "lateral-movement",
+        "pivot"
+      ]
+    },
+    {
+      "type": "yara",
+      "value": "rule Wiper_MBR_Overwrite { strings: $w = { 55 AA } $z = { 00 00 00 00 00 00 00 00 00 00 } condition: $w at 510 and $z }",
+      "valueHash": "55230aec90347495",
+      "sourceCount": 1,
+      "sources": [
+        "ORG-C DFIR"
+      ],
+      "maxSeverity": "CRITICAL",
+      "maxConfidence": 93,
+      "tags": [
+        "destructive",
+        "impact",
+        "wiper",
+        "yara"
+      ]
+    },
+    {
+      "type": "md5",
+      "value": "44d88612fea8a8f36de82e1278abb02f",
+      "valueHash": "1f2b9e9ee507cf8d",
+      "sourceCount": 2,
+      "sources": [
+        "ORG-A SOC",
+        "ORG-B CERT"
+      ],
+      "maxSeverity": "HIGH",
+      "maxConfidence": 80,
+      "tags": [
+        "dropper",
+        "malware",
+        "ransomware"
+      ]
+    },
+    {
+      "type": "domain",
+      "value": "phishing-portal.example",
+      "valueHash": "967b92d350a5e158",
+      "sourceCount": 2,
+      "sources": [
+        "ORG-B CERT",
+        "ORG-C DFIR"
+      ],
+      "maxSeverity": "HIGH",
+      "maxConfidence": 84,
+      "tags": [
+        "credential-theft",
+        "phishing",
+        "spear-phishing"
+      ]
+    },
+    {
+      "type": "domain",
+      "value": "spear-phish-cdn.example",
+      "valueHash": "67b1fcdd218603eb",
+      "sourceCount": 2,
+      "sources": [
+        "ORG-B CERT",
+        "ORG-C DFIR"
+      ],
+      "maxSeverity": "HIGH",
+      "maxConfidence": 85,
+      "tags": [
+        "credential-theft",
+        "initial-access",
+        "spear-phishing",
+        "typosquat"
+      ]
+    },
+    {
+      "type": "sha1",
+      "value": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+      "valueHash": "07e23ede2756aa3f",
+      "sourceCount": 1,
+      "sources": [
+        "ORG-C DFIR"
+      ],
+      "maxSeverity": "HIGH",
+      "maxConfidence": 83,
+      "tags": [
+        "destructive",
+        "malware",
+        "wiper"
+      ]
+    },
+    {
+      "type": "url",
+      "value": "https://phishing-portal.example/login",
+      "valueHash": "e50b17a5e6ad3921",
+      "sourceCount": 1,
+      "sources": [
+        "ORG-A SOC"
+      ],
+      "maxSeverity": "HIGH",
+      "maxConfidence": 79,
+      "tags": [
+        "credential-theft",
+        "initial-access",
+        "phishing"
+      ]
+    },
+    {
+      "type": "domain",
+      "value": "dropper-payload.example",
+      "valueHash": "a4dc1f83ce7cc7ea",
+      "sourceCount": 1,
+      "sources": [
+        "ORG-A SOC"
+      ],
+      "maxSeverity": "HIGH",
+      "maxConfidence": 86,
+      "tags": [
+        "dropper",
+        "initial-access",
+        "malware"
+      ]
+    },
+    {
+      "type": "url",
+      "value": "https://dropper-payload.example/dl/stage2.exe",
+      "valueHash": "735604ea30db060f",
+      "sourceCount": 1,
+      "sources": [
+        "ORG-C DFIR"
+      ],
+      "maxSeverity": "HIGH",
+      "maxConfidence": 83,
+      "tags": [
+        "dropper",
+        "execution",
+        "malware"
+      ]
+    },
+    {
+      "type": "yara",
+      "value": "rule APT29_Loader_Pattern { strings: $m = { 4D 5A 90 00 } $s = \"COBALT\" condition: all of them }",
+      "valueHash": "4070df1c60226561",
+      "sourceCount": 1,
+      "sources": [
+        "ORG-B CERT"
+      ],
+      "maxSeverity": "HIGH",
+      "maxConfidence": 77,
+      "tags": [
+        "apt29",
+        "loader",
+        "yara"
+      ]
+    },
+    {
+      "type": "sha256",
+      "value": "abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890",
+      "valueHash": "9fac355710bb2183",
+      "sourceCount": 1,
+      "sources": [
+        "ORG-B CERT"
+      ],
+      "maxSeverity": "HIGH",
+      "maxConfidence": 84,
+      "tags": [
+        "destructive",
+        "malware",
+        "wiper"
+      ]
+    }
+  ],
+  "emergingThemes": [
+    {
+      "tag": "apt29",
+      "count": 17,
+      "sourceCount": 3,
+      "maxSeverity": "CRITICAL"
+    },
+    {
+      "tag": "c2",
+      "count": 9,
+      "sourceCount": 3,
+      "maxSeverity": "CRITICAL"
+    },
+    {
+      "tag": "ransomware",
+      "count": 9,
+      "sourceCount": 3,
+      "maxSeverity": "CRITICAL"
+    },
+    {
+      "tag": "malware",
+      "count": 8,
+      "sourceCount": 3,
+      "maxSeverity": "CRITICAL"
+    },
+    {
+      "tag": "bruteforce",
+      "count": 6,
+      "sourceCount": 3,
+      "maxSeverity": "HIGH"
+    },
+    {
+      "tag": "yara",
+      "count": 5,
+      "sourceCount": 3,
+      "maxSeverity": "CRITICAL"
+    },
+    {
+      "tag": "exfiltration",
+      "count": 4,
+      "sourceCount": 3,
+      "maxSeverity": "CRITICAL"
+    },
+    {
+      "tag": "spear-phishing",
+      "count": 4,
+      "sourceCount": 2,
+      "maxSeverity": "CRITICAL"
+    },
+    {
+      "tag": "initial-access",
+      "count": 4,
+      "sourceCount": 2,
+      "maxSeverity": "CRITICAL"
+    },
+    {
+      "tag": "ssh",
+      "count": 4,
+      "sourceCount": 3,
+      "maxSeverity": "HIGH"
+    },
+    {
+      "tag": "dropper",
+      "count": 4,
+      "sourceCount": 3,
+      "maxSeverity": "HIGH"
+    },
+    {
+      "tag": "credential-theft",
+      "count": 4,
+      "sourceCount": 3,
+      "maxSeverity": "HIGH"
+    },
+    {
+      "tag": "scanning",
+      "count": 4,
+      "sourceCount": 3,
+      "maxSeverity": "HIGH"
+    },
+    {
+      "tag": "wiper",
+      "count": 3,
+      "sourceCount": 2,
+      "maxSeverity": "CRITICAL"
+    },
+    {
+      "tag": "destructive",
+      "count": 3,
+      "sourceCount": 2,
+      "maxSeverity": "CRITICAL"
+    },
+    {
+      "tag": "impact",
+      "count": 3,
+      "sourceCount": 2,
+      "maxSeverity": "CRITICAL"
+    },
+    {
+      "tag": "persistence",
+      "count": 3,
+      "sourceCount": 1,
+      "maxSeverity": "CRITICAL"
+    },
+    {
+      "tag": "identity",
+      "count": 3,
+      "sourceCount": 2,
+      "maxSeverity": "HIGH"
+    },
+    {
+      "tag": "phishing",
+      "count": 3,
+      "sourceCount": 3,
+      "maxSeverity": "HIGH"
+    },
+    {
+      "tag": "lateral-movement",
+      "count": 2,
+      "sourceCount": 1,
+      "maxSeverity": "CRITICAL"
+    },
+    {
+      "tag": "credential-access",
+      "count": 2,
+      "sourceCount": 2,
+      "maxSeverity": "CRITICAL"
+    },
+    {
+      "tag": "data-theft",
+      "count": 2,
+      "sourceCount": 2,
+      "maxSeverity": "CRITICAL"
+    },
+    {
+      "tag": "command-control",
+      "count": 2,
+      "sourceCount": 2,
+      "maxSeverity": "CRITICAL"
+    },
+    {
+      "tag": "payment-site",
+      "count": 2,
+      "sourceCount": 2,
+      "maxSeverity": "CRITICAL"
+    },
+    {
+      "tag": "backdoor",
+      "count": 2,
+      "sourceCount": 2,
+      "maxSeverity": "CRITICAL"
+    },
+    {
+      "tag": "loader",
+      "count": 2,
+      "sourceCount": 2,
+      "maxSeverity": "HIGH"
+    },
+    {
+      "tag": "proxy",
+      "count": 2,
+      "sourceCount": 2,
+      "maxSeverity": "HIGH"
+    },
+    {
+      "tag": "rdp",
+      "count": 2,
+      "sourceCount": 2,
+      "maxSeverity": "HIGH"
+    },
+    {
+      "tag": "encryption",
+      "count": 1,
+      "sourceCount": 1,
+      "maxSeverity": "CRITICAL"
+    },
+    {
+      "tag": "active",
+      "count": 1,
+      "sourceCount": 1,
+      "maxSeverity": "CRITICAL"
+    },
+    {
+      "tag": "confirmed",
+      "count": 1,
+      "sourceCount": 1,
+      "maxSeverity": "CRITICAL"
+    },
+    {
+      "tag": "cobalt-strike",
+      "count": 1,
+      "sourceCount": 1,
+      "maxSeverity": "CRITICAL"
+    },
+    {
+      "tag": "post-exploitation",
+      "count": 1,
+      "sourceCount": 1,
+      "maxSeverity": "CRITICAL"
+    },
+    {
+      "tag": "pivot",
+      "count": 1,
+      "sourceCount": 1,
+      "maxSeverity": "CRITICAL"
+    },
+    {
+      "tag": "execution",
+      "count": 1,
+      "sourceCount": 1,
+      "maxSeverity": "HIGH"
+    },
+    {
+      "tag": "tor-exit",
+      "count": 1,
+      "sourceCount": 1,
+      "maxSeverity": "HIGH"
+    },
+    {
+      "tag": "anonymization",
+      "count": 1,
+      "sourceCount": 1,
+      "maxSeverity": "HIGH"
+    },
+    {
+      "tag": "typosquat",
+      "count": 1,
+      "sourceCount": 1,
+      "maxSeverity": "HIGH"
+    },
+    {
+      "tag": "vuln-scan",
+      "count": 1,
+      "sourceCount": 1,
+      "maxSeverity": "HIGH"
+    },
+    {
+      "tag": "initial-reconnaissance",
+      "count": 1,
+      "sourceCount": 1,
+      "maxSeverity": "HIGH"
+    },
+    {
+      "tag": "exploitation-attempt",
+      "count": 1,
+      "sourceCount": 1,
+      "maxSeverity": "HIGH"
+    }
+  ],
+  "sourceReliability": [
+    {
+      "sourceOrg": "ORG-C DFIR",
+      "indicatorCount": 17,
+      "averageConfidence": 85.76,
+      "highSeverityCount": 16,
+      "reliabilityScore": 149.76
+    },
+    {
+      "sourceOrg": "ORG-B CERT",
+      "indicatorCount": 16,
+      "averageConfidence": 83.5,
+      "highSeverityCount": 15,
+      "reliabilityScore": 143.5
+    },
+    {
+      "sourceOrg": "ORG-A SOC",
+      "indicatorCount": 17,
+      "averageConfidence": 84.88,
+      "highSeverityCount": 14,
+      "reliabilityScore": 140.88
+    }
+  ],
+  "recommendedActions": [
+    "Promote multi-source high-confidence indicators to MISP sharing groups.",
+    "Create TheHive cases for CRITICAL indicators tagged c2, ransomware, or credential-access.",
+    "Push sanitized STIX bundles to TAXII collections for partner consumption.",
+    "Review low-confidence single-source indicators before external sharing."
+  ]
+}

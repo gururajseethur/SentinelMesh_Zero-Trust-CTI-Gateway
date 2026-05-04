@@ -1,0 +1,211 @@
+{
+  "type": "bundle",
+  "id": "bundle--d500fe99-70a7-47b6-b509-30f6e0b30793",
+  "objects": [
+    {
+      "type": "marking-definition",
+      "spec_version": "2.1",
+      "id": "marking-definition--9714f26c-c5f5-4fb6-b427-ee7d0a412b93",
+      "created": "2026-01-01T00:00:00.000Z",
+      "definition_type": "tlp",
+      "name": "TLP:WHITE",
+      "definition": {
+        "tlp": "WHITE"
+      }
+    },
+    {
+      "type": "marking-definition",
+      "spec_version": "2.1",
+      "id": "marking-definition--1b2908be-ea9f-4fd6-8b37-b51d08d37623",
+      "created": "2026-01-01T00:00:00.000Z",
+      "definition_type": "tlp",
+      "name": "TLP:GREEN",
+      "definition": {
+        "tlp": "GREEN"
+      }
+    },
+    {
+      "type": "marking-definition",
+      "spec_version": "2.1",
+      "id": "marking-definition--01c9aab0-9b65-4c53-9b51-b4ea224b3ea0",
+      "created": "2026-01-01T00:00:00.000Z",
+      "definition_type": "tlp",
+      "name": "TLP:AMBER",
+      "definition": {
+        "tlp": "AMBER"
+      }
+    },
+    {
+      "type": "marking-definition",
+      "spec_version": "2.1",
+      "id": "marking-definition--4acca9d0-3828-4ae2-aebd-659191d2e295",
+      "created": "2026-01-01T00:00:00.000Z",
+      "definition_type": "tlp",
+      "name": "TLP:RED",
+      "definition": {
+        "tlp": "RED"
+      }
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--3d6db83a-47d2-4095-b739-cb0dcd347b79",
+      "created": "2026-04-28T00:00:00.000Z",
+      "modified": "2026-04-28T00:00:00.000Z",
+      "name": "IPV4 indicator from ORG-A SOC",
+      "description": "Normalized and privacy-screened TISP indicator. Source: ORG-A SOC. Severity: HIGH.",
+      "indicator_types": [
+        "unknown"
+      ],
+      "pattern": "[ipv4-addr:value = '203.0.113.0/24']",
+      "pattern_type": "stix",
+      "valid_from": "2026-04-21T09:15:00.000Z",
+      "labels": [
+        "high",
+        "ipv4",
+        "bruteforce",
+        "identity",
+        "ssh"
+      ],
+      "confidence": 88,
+      "object_marking_refs": [
+        "marking-definition--01c9aab0-9b65-4c53-9b51-b4ea224b3ea0"
+      ],
+      "x_tisp_source_org": "ORG-A SOC",
+      "x_tisp_original_value_hash": "sha256:841e85db-3408-4400-87d8-45a8fd9be2f7"
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--3d6db83a-47d2-4095-b739-cb0dcd347b79",
+      "created": "2026-04-28T00:00:00.000Z",
+      "modified": "2026-04-28T00:00:00.000Z",
+      "name": "IPV4 indicator from ORG-B CERT",
+      "description": "Normalized and privacy-screened TISP indicator. Source: ORG-B CERT. Severity: HIGH.",
+      "indicator_types": [
+        "unknown"
+      ],
+      "pattern": "[ipv4-addr:value = '203.0.113.0/24']",
+      "pattern_type": "stix",
+      "valid_from": "2026-04-21T09:44:00.000Z",
+      "labels": [
+        "high",
+        "ipv4",
+        "bruteforce",
+        "identity",
+        "ssh"
+      ],
+      "confidence": 82,
+      "object_marking_refs": [
+        "marking-definition--01c9aab0-9b65-4c53-9b51-b4ea224b3ea0"
+      ],
+      "x_tisp_source_org": "ORG-B CERT",
+      "x_tisp_original_value_hash": "sha256:4486f606-6fbb-406e-9db1-becfb98b113e"
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--5d922142-0936-485c-bc77-3dd7e4e254f9",
+      "created": "2026-04-28T00:00:00.000Z",
+      "modified": "2026-04-28T00:00:00.000Z",
+      "name": "DOMAIN indicator from ORG-A SOC",
+      "description": "Normalized and privacy-screened TISP indicator. Source: ORG-A SOC. Severity: CRITICAL.",
+      "indicator_types": [
+        "unknown"
+      ],
+      "pattern": "[domain-name:value = 'malware-control.example']",
+      "pattern_type": "stix",
+      "valid_from": "2026-04-22T11:30:00.000Z",
+      "labels": [
+        "critical",
+        "domain",
+        "c2",
+        "ransomware"
+      ],
+      "confidence": 92,
+      "object_marking_refs": [
+        "marking-definition--1b2908be-ea9f-4fd6-8b37-b51d08d37623"
+      ],
+      "x_tisp_source_org": "ORG-A SOC"
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--a7a32f4f-f470-4fd5-991e-2e27cd965c89",
+      "created": "2026-04-28T00:00:00.000Z",
+      "modified": "2026-04-28T00:00:00.000Z",
+      "name": "URL indicator from ORG-C DFIR",
+      "description": "Normalized and privacy-screened TISP indicator. Source: ORG-C DFIR. Severity: CRITICAL.",
+      "indicator_types": [
+        "unknown"
+      ],
+      "pattern": "[url:value = 'https://malware-control.example/update?redacted=4ca6d94b5c18']",
+      "pattern_type": "stix",
+      "valid_from": "2026-04-22T12:05:00.000Z",
+      "labels": [
+        "critical",
+        "url",
+        "c2",
+        "ransomware",
+        "credential-access"
+      ],
+      "confidence": 76,
+      "object_marking_refs": [
+        "marking-definition--01c9aab0-9b65-4c53-9b51-b4ea224b3ea0"
+      ],
+      "x_tisp_source_org": "ORG-C DFIR",
+      "x_tisp_original_value_hash": "sha256:d573c6dd-af39-42e8-831d-7f5563ae1aeb"
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--a19aafe5-788a-4794-a98f-ff48bfef4834",
+      "created": "2026-04-28T00:00:00.000Z",
+      "modified": "2026-04-28T00:00:00.000Z",
+      "name": "MD5 indicator from ORG-B CERT",
+      "description": "Normalized and privacy-screened TISP indicator. Source: ORG-B CERT. Severity: MEDIUM.",
+      "indicator_types": [
+        "unknown"
+      ],
+      "pattern": "[file:hashes.MD5 = '44d88612fea8a8f36de82e1278abb02f']",
+      "pattern_type": "stix",
+      "valid_from": "2026-04-20T18:40:00.000Z",
+      "labels": [
+        "medium",
+        "md5",
+        "malware",
+        "dropper"
+      ],
+      "confidence": 67,
+      "object_marking_refs": [
+        "marking-definition--1b2908be-ea9f-4fd6-8b37-b51d08d37623"
+      ],
+      "x_tisp_source_org": "ORG-B CERT"
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--ed3fa5c7-28e0-45fa-a349-f69aa1b9c5a0",
+      "created": "2026-04-28T00:00:00.000Z",
+      "modified": "2026-04-28T00:00:00.000Z",
+      "name": "YARA indicator from ORG-C DFIR",
+      "description": "Normalized and privacy-screened TISP indicator. Source: ORG-C DFIR. Severity: MEDIUM.",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "pattern": "[artifact:payload_bin MATCHES 'eb2b41cc39c2d519629a281a30d85ea6dd2efd52187ee47991665c2c0df10bc8']",
+      "pattern_type": "yara",
+      "valid_from": "2026-04-23T08:10:00.000Z",
+      "labels": [
+        "medium",
+        "yara",
+        "powershell"
+      ],
+      "confidence": 71,
+      "object_marking_refs": [
+        "marking-definition--1b2908be-ea9f-4fd6-8b37-b51d08d37623"
+      ],
+      "x_tisp_source_org": "ORG-C DFIR"
+    }
+  ]
+}

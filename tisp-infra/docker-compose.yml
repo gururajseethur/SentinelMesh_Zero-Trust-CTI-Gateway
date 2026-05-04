@@ -1,0 +1,401 @@
+# TISP - Threat Intelligence Sharing Platform
+# Orchestration: Docker Compose V2
+# Author: Gururaj Seethuru
+
+networks:
+  frontend-net:
+    driver: bridge
+  backend-net:
+    driver: bridge
+  ir-net:
+    driver: bridge
+  identity-net:
+    driver: bridge
+  automation-net:
+    driver: bridge
+
+volumes:
+  misp_mysql_data:
+  misp_files_data:
+  misp_redis_data:
+  opencti_es_data:
+  opencti_minio_data:
+  opencti_rabbitmq_data:
+  opencti_redis_data:
+  thehive_es_data:
+  keycloak_db_data:
+  n8n_data:
+  grafana_data:
+
+services:
+  # --- IDENTITY LAYER ---
+  keycloak-db:
+    image: postgres:16-alpine
+    volumes:
+      - keycloak_db_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: ${KEYCLOAK_DB_NAME:-keycloak}
+      POSTGRES_USER: ${KEYCLOAK_DB_USER:-keycloak}
+      POSTGRES_PASSWORD: ${KEYCLOAK_DB_PASSWORD:?Set KEYCLOAK_DB_PASSWORD in .env}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+    networks:
+      - identity-net
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:24.0
+    # start --optimized requires a configured DB. Use docker-compose.dev.yml override for local dev.
+    command: start --optimized
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://keycloak-db:5432/${KEYCLOAK_DB_NAME:-keycloak}
+      KC_DB_USERNAME: ${KEYCLOAK_DB_USER:-keycloak}
+      KC_DB_PASSWORD: ${KEYCLOAK_DB_PASSWORD:?Set KEYCLOAK_DB_PASSWORD in .env}
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN_USER:-admin}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:?Set KEYCLOAK_ADMIN_PASSWORD in .env}
+    depends_on:
+      keycloak-db:
+        condition: service_healthy
+    ports:
+      - "8180:8080"
+    networks:
+      - identity-net
+      - frontend-net
+    healthcheck:
+      test: ["CMD-SHELL", "exec 3<>/dev/tcp/127.0.0.1/8080"]
+      interval: 30s
+      timeout: 5s
+      retries: 10
+
+  # --- INGESTION LAYER (MISP) ---
+  misp-mysql:
+    image: mysql:8
+    volumes:
+      - misp_mysql_data:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: misp
+      MYSQL_USER: misp
+      MYSQL_PASSWORD: ${MISP_DB_PASSWORD:?Set MISP_DB_PASSWORD in .env}
+      MYSQL_ROOT_PASSWORD: ${MISP_DB_ROOT_PASSWORD:?Set MISP_DB_ROOT_PASSWORD in .env}
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -u\"$${MYSQL_USER}\" -p\"$${MYSQL_PASSWORD}\" --silent"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+    networks:
+      - backend-net
+
+  misp-redis:
+    image: redis:7-alpine
+    command: ["redis-server", "--appendonly", "yes", "--requirepass", "${MISP_REDIS_PASSWORD:?Set MISP_REDIS_PASSWORD in .env}"]
+    volumes:
+      - misp_redis_data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli -a \"$${MISP_REDIS_PASSWORD}\" ping"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+    networks:
+      - backend-net
+
+  misp-modules:
+    image: ghcr.io/misp/misp-docker/misp-modules:v3.0.7
+    networks:
+      - backend-net
+    healthcheck:
+      test: ["CMD-SHELL", "python3 - <<'PY'\nimport urllib.request\nurllib.request.urlopen('http://127.0.0.1:6666/modules', timeout=5)\nPY"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  misp:
+    image: ghcr.io/misp/misp-docker/misp-core:v2.5.35
+    depends_on:
+      misp-mysql:
+        condition: service_healthy
+      misp-redis:
+        condition: service_healthy
+      misp-modules:
+        condition: service_healthy
+    volumes:
+      - misp_files_data:/var/www/MISP/app/files
+    ports:
+      - "4443:443"
+    environment:
+      - MYSQL_HOST=misp-mysql
+      - MYSQL_DATABASE=misp
+      - MYSQL_USER=misp
+      - MYSQL_PASSWORD=${MISP_DB_PASSWORD:?Set MISP_DB_PASSWORD in .env}
+      - MYSQL_ROOT_PASSWORD=${MISP_DB_ROOT_PASSWORD:?Set MISP_DB_ROOT_PASSWORD in .env}
+      - REDIS_HOST=misp-redis
+      - REDIS_PASSWORD=${MISP_REDIS_PASSWORD:?Set MISP_REDIS_PASSWORD in .env}
+      - BASE_URL=https://${TISP_DOMAIN:-localhost}:4443
+      - MISP_BASEURL=https://${TISP_DOMAIN:-localhost}:4443
+      - MISP_MODULES_FQDN=http://misp-modules:6666
+      - ADMIN_EMAIL=${MISP_ADMIN_EMAIL:-admin@tisp.local}
+      - ADMIN_PASSWORD=${MISP_ADMIN_PASSWORD:?Set MISP_ADMIN_PASSWORD in .env}
+      - ADMIN_ORG=${MISP_ADMIN_ORG:-TISP}
+      - ADMIN_ORG_UUID=${MISP_ADMIN_ORG_UUID:?Set MISP_ADMIN_ORG_UUID in .env}
+      - MISP_EMAIL=${MISP_EMAIL:-misp@tisp.local}
+      - GPG_PASSPHRASE=${MISP_GPG_PASSPHRASE:?Set MISP_GPG_PASSPHRASE in .env}
+      - ENCRYPTION_KEY=${MISP_ENCRYPTION_KEY:?Set MISP_ENCRYPTION_KEY in .env}
+      - SALT=${MISP_SALT:?Set MISP_SALT in .env}
+      - UUID=${MISP_UUID:?Set MISP_UUID in .env}
+      - DISABLE_PRINTING_PLAINTEXT_CREDENTIALS=true
+    networks:
+      - backend-net
+      - frontend-net
+      - automation-net
+    healthcheck:
+      test: ["CMD-SHELL", "curl -kfsS https://127.0.0.1/ || exit 1"]
+      interval: 60s
+      timeout: 15s
+      retries: 10
+
+  # --- CORRELATION LAYER (OpenCTI) ---
+  opencti-redis:
+    image: redis:7-alpine
+    volumes:
+      - opencti_redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+    networks:
+      - backend-net
+
+  opencti-elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.13.0
+    volumes:
+      - opencti_es_data:/usr/share/elasticsearch/data
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://127.0.0.1:9200/_cluster/health?wait_for_status=yellow\\&timeout=5s || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 20
+    networks:
+      - backend-net
+
+  opencti-minio:
+    image: minio/minio:RELEASE.2025-04-22T22-12-26Z
+    command: server /data
+    volumes:
+      - opencti_minio_data:/data
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY:?Set MINIO_ACCESS_KEY in .env}
+      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY:?Set MINIO_SECRET_KEY in .env}
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://127.0.0.1:9000/minio/health/live || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+    networks:
+      - backend-net
+
+  opencti-rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    volumes:
+      - opencti_rabbitmq_data:/var/lib/rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER:-opencti}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS:?Set RABBITMQ_DEFAULT_PASS in .env}
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+    networks:
+      - backend-net
+
+  opencti:
+    image: opencti/platform:6.0.0
+    environment:
+      - APP__ADMIN__EMAIL=${OPENCTI_ADMIN_EMAIL:-admin@tisp.local}
+      - APP__ADMIN__PASSWORD=${OPENCTI_ADMIN_PASSWORD:?Set OPENCTI_ADMIN_PASSWORD in .env}
+      - APP__ADMIN__TOKEN=${OPENCTI_ADMIN_TOKEN:?Set OPENCTI_ADMIN_TOKEN in .env}
+      - REDIS__HOSTNAME=opencti-redis
+      - ELASTICSEARCH__URL=http://opencti-elasticsearch:9200
+      - MINIO__ENDPOINT=opencti-minio
+      - MINIO__ACCESS_KEY=${MINIO_ACCESS_KEY:?Set MINIO_ACCESS_KEY in .env}
+      - MINIO__SECRET_KEY=${MINIO_SECRET_KEY:?Set MINIO_SECRET_KEY in .env}
+      - RABBITMQ__HOSTNAME=opencti-rabbitmq
+      - RABBITMQ__USERNAME=${RABBITMQ_DEFAULT_USER:-opencti}
+      - RABBITMQ__PASSWORD=${RABBITMQ_DEFAULT_PASS:?Set RABBITMQ_DEFAULT_PASS in .env}
+    depends_on:
+      opencti-redis:
+        condition: service_healthy
+      opencti-elasticsearch:
+        condition: service_healthy
+      opencti-minio:
+        condition: service_healthy
+      opencti-rabbitmq:
+        condition: service_healthy
+    ports:
+      - "8080:4000"
+    networks:
+      - backend-net
+      - frontend-net
+      - automation-net
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://127.0.0.1:4000/health || exit 1"]
+      interval: 60s
+      timeout: 10s
+      retries: 20
+
+  # --- INCIDENT RESPONSE LAYER (TheHive) ---
+  thehive-es:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.13.0
+    volumes:
+      - thehive_es_data:/usr/share/elasticsearch/data
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://127.0.0.1:9200/_cluster/health?wait_for_status=yellow\\&timeout=5s || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 20
+    networks:
+      - ir-net
+
+  thehive:
+    image: strangebee/thehive:5.2
+    depends_on:
+      thehive-es:
+        condition: service_healthy
+    environment:
+      - APPLICATION_SECRET=${THEHIVE_APPLICATION_SECRET:?Set THEHIVE_APPLICATION_SECRET in .env}
+      - "elasticsearch.uri=http://thehive-es:9200"
+      - "elasticsearch.user=${THEHIVE_ELASTICSEARCH_USER:-elastic}"
+      - "elasticsearch.password=${THEHIVE_ELASTIC_PASSWORD:?Set THEHIVE_ELASTIC_PASSWORD in .env}"
+    ports:
+      - "9000:9000"
+    networks:
+      - ir-net
+      - frontend-net
+      - automation-net
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://127.0.0.1:9000/api/status || exit 1"]
+      interval: 60s
+      timeout: 10s
+      retries: 20
+
+  # --- AUTOMATION LAYER ---
+  n8n:
+    image: n8nio/n8n:1.88.0
+    volumes:
+      - n8n_data:/home/node/.n8n
+      - ./n8n-workflows:/data/workflows:ro
+    environment:
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=${N8N_BASIC_AUTH_USER:-admin}
+      - N8N_BASIC_AUTH_PASSWORD=${N8N_BASIC_AUTH_PASSWORD:?Set N8N_BASIC_AUTH_PASSWORD in .env}
+      - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY:?Set N8N_ENCRYPTION_KEY in .env}
+      - N8N_SECURE_COOKIE=false
+      - N8N_WORKFLOWS_FOLDER=/data/workflows
+    ports:
+      - "5678:5678"
+    networks:
+      - automation-net
+      - frontend-net
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:5678/healthz || exit 1"]
+      interval: 60s
+      timeout: 10s
+      retries: 10
+
+  # --- SERVER-SIDE API PROXY ---
+  # Port 3001 is intentionally NOT published to the host NIC here.
+  # Access is via Docker-internal DNS (tisp-proxy:3001) only.
+  # Use docker-compose.dev.yml to expose this port for local debugging.
+  tisp-proxy:
+    build:
+      context: ../tisp-proxy
+    environment:
+      - TISP_PROXY_PORT=3001
+      - MISP_URL=https://misp:443
+      - OPENCTI_URL=http://opencti:4000
+      - THEHIVE_URL=http://thehive:9000
+      - MISP_API_KEY=${MISP_API_KEY:?Set MISP_API_KEY in .env}
+      - OPENCTI_TOKEN=${OPENCTI_TOKEN:?Set OPENCTI_TOKEN in .env}
+      - THEHIVE_API_KEY=${THEHIVE_API_KEY:?Set THEHIVE_API_KEY in .env}
+    depends_on:
+      misp:
+        condition: service_healthy
+      opencti:
+        condition: service_healthy
+      thehive:
+        condition: service_healthy
+    networks:
+      - frontend-net
+      - backend-net
+      - ir-net
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:3001/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # --- TAXII EXPORT LAYER ---
+  tisp-taxii:
+    image: node:22-alpine
+    working_dir: /app
+    command: node src/taxii-server.mjs
+    volumes:
+      - ../tisp-tools:/app:ro
+    environment:
+      - TAXII_PORT=7000
+      - TAXII_BUNDLE_PATH=out/stix-bundle.json
+    ports:
+      - "7000:7000"
+    networks:
+      - frontend-net
+      - automation-net
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:7000/taxii2/ || exit 1"]
+      interval: 60s
+      timeout: 10s
+      retries: 5
+
+  # --- OBSERVABILITY LAYER ---
+  loki:
+    image: grafana/loki:3.4.2
+    command: -config.file=/etc/loki/local-config.yaml
+    ports:
+      - "3100:3100"
+    networks:
+      - frontend-net
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:3100/ready || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+
+  grafana:
+    image: grafana/grafana:11.6.1
+    depends_on:
+      loki:
+        condition: service_healthy
+    volumes:
+      - grafana_data:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_ADMIN_USER:-admin}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD:?Set GRAFANA_ADMIN_PASSWORD in .env}
+      - GF_SERVER_HTTP_PORT=3001
+    ports:
+      - "3001:3001"
+    networks:
+      - frontend-net
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:3001/api/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 10

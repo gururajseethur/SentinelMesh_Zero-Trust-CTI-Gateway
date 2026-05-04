@@ -1,0 +1,217 @@
+# Production overlay for TISP Nexus.
+# Use with:
+# docker compose -f docker-compose.yml -f docker-compose.prod.yml --env-file .env.prod config
+
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "5"
+
+x-restart: &default-restart
+  restart: unless-stopped
+  logging: *default-logging
+
+services:
+  reverse-proxy:
+    <<: *default-restart
+    image: nginx:1.27-alpine
+    depends_on:
+      - misp
+      - opencti
+      - thehive
+      - keycloak
+      - n8n
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      TISP_DOMAIN: ${TISP_DOMAIN:?Set TISP_DOMAIN in .env.prod}
+      TISP_ADMIN_EMAIL: ${TISP_ADMIN_EMAIL:?Set TISP_ADMIN_EMAIL in .env.prod}
+    command: >
+      sh -c "envsubst '$$TISP_DOMAIN' < /etc/nginx/tisp-templates/tisp.conf.template
+      > /etc/nginx/conf.d/default.conf
+      && nginx -g 'daemon off;'"
+    logging:
+      driver: loki
+      options:
+        loki-url: http://localhost:3100/loki/api/v1/push
+        loki-external-labels: service=reverse-proxy,platform=tisp
+    volumes:
+      - ./nginx/templates:/etc/nginx/tisp-templates:ro
+      - ./certs:/etc/nginx/certs:ro
+      - certbot_webroot:/var/www/certbot:ro
+    networks:
+      - frontend-net
+
+  certbot:
+    image: certbot/certbot:latest
+    command: >
+      certonly --webroot --webroot-path=/var/www/certbot
+      --email ${TISP_ADMIN_EMAIL:?Set TISP_ADMIN_EMAIL in .env.prod} --agree-tos --no-eff-email
+      -d ${TISP_DOMAIN:?Set TISP_DOMAIN in .env.prod} -d misp.${TISP_DOMAIN} -d opencti.${TISP_DOMAIN}
+      -d thehive.${TISP_DOMAIN} -d auth.${TISP_DOMAIN} -d n8n.${TISP_DOMAIN}
+    environment:
+      TISP_ADMIN_EMAIL: ${TISP_ADMIN_EMAIL:?Set TISP_ADMIN_EMAIL in .env.prod}
+      TISP_DOMAIN: ${TISP_DOMAIN:?Set TISP_DOMAIN in .env.prod}
+    volumes:
+      - certbot_webroot:/var/www/certbot
+      - certbot_certs:/etc/letsencrypt
+    depends_on:
+      - reverse-proxy
+
+  keycloak-db:
+    <<: *default-restart
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+
+  keycloak:
+    <<: *default-restart
+    command: start --optimized
+    environment:
+      KC_HOSTNAME: auth.${TISP_DOMAIN:?Set TISP_DOMAIN in .env.prod}
+      KC_HOSTNAME_STRICT: "true"
+      KC_HTTP_ENABLED: "true"
+      KC_PROXY_HEADERS: xforwarded
+      KC_HEALTH_ENABLED: "true"
+      KC_METRICS_ENABLED: "true"
+    ports: !reset []
+    healthcheck:
+      test: ["CMD-SHELL", "exec 3<>/dev/tcp/127.0.0.1/8080"]
+      interval: 30s
+      timeout: 5s
+      retries: 10
+
+  misp-mysql:
+    <<: *default-restart
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -u\"$${MYSQL_USER}\" -p\"$${MYSQL_PASSWORD}\" --silent"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+
+  misp-redis:
+    <<: *default-restart
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli -a \"$${MISP_REDIS_PASSWORD}\" ping"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+
+  misp-modules:
+    <<: *default-restart
+
+  misp:
+    <<: *default-restart
+    ports: !reset []
+    environment:
+      - BASE_URL=https://misp.${TISP_DOMAIN:?Set TISP_DOMAIN in .env.prod}
+      - MISP_BASEURL=https://misp.${TISP_DOMAIN:?Set TISP_DOMAIN in .env.prod}
+    healthcheck:
+      test: ["CMD-SHELL", "curl -kfsS https://127.0.0.1/ || wget --no-check-certificate -qO- https://127.0.0.1/ || exit 1"]
+      interval: 60s
+      timeout: 15s
+      retries: 10
+
+  opencti-redis:
+    <<: *default-restart
+    command: ["redis-server", "--appendonly", "yes"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+
+  opencti-elasticsearch:
+    <<: *default-restart
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=true
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD:?Set ELASTIC_PASSWORD in .env.prod}
+      - "ES_JAVA_OPTS=${OPENCTI_ES_JAVA_OPTS:--Xms2g -Xmx2g}"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS -u elastic:$${ELASTIC_PASSWORD} http://127.0.0.1:9200/_cluster/health?wait_for_status=yellow\\&timeout=5s || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 20
+
+  opencti-minio:
+    <<: *default-restart
+    image: minio/minio:RELEASE.2025-04-22T22-12-26Z
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://127.0.0.1:9000/minio/health/live || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+
+  opencti-rabbitmq:
+    <<: *default-restart
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+
+  opencti:
+    <<: *default-restart
+    ports: !reset []
+    environment:
+      - APP__BASE_URL=https://opencti.${TISP_DOMAIN:?Set TISP_DOMAIN in .env.prod}
+      - ELASTICSEARCH__USERNAME=elastic
+      - ELASTICSEARCH__PASSWORD=${ELASTIC_PASSWORD:?Set ELASTIC_PASSWORD in .env.prod}
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://127.0.0.1:8080/health || wget -qO- http://127.0.0.1:8080/health || exit 1"]
+      interval: 60s
+      timeout: 10s
+      retries: 20
+
+  thehive-es:
+    <<: *default-restart
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=true
+      - ELASTIC_PASSWORD=${THEHIVE_ELASTIC_PASSWORD:?Set THEHIVE_ELASTIC_PASSWORD in .env.prod}
+      - "ES_JAVA_OPTS=${THEHIVE_ES_JAVA_OPTS:--Xms2g -Xmx2g}"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS -u elastic:$${ELASTIC_PASSWORD} http://127.0.0.1:9200/_cluster/health?wait_for_status=yellow\\&timeout=5s || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 20
+
+  thehive:
+    <<: *default-restart
+    ports: !reset []
+    environment:
+      - APPLICATION_SECRET=${THEHIVE_APPLICATION_SECRET:?Set THEHIVE_APPLICATION_SECRET in .env.prod}
+      - CORTEX_ENABLED=false
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://127.0.0.1:9000/api/status || wget -qO- http://127.0.0.1:9000/api/status || exit 1"]
+      interval: 60s
+      timeout: 10s
+      retries: 20
+
+  n8n:
+    <<: *default-restart
+    image: n8nio/n8n:1.88.0
+    ports: !reset []
+    environment:
+      - N8N_HOST=n8n.${TISP_DOMAIN:?Set TISP_DOMAIN in .env.prod}
+      - N8N_PROTOCOL=https
+      - WEBHOOK_URL=https://n8n.${TISP_DOMAIN}/
+      - N8N_SECURE_COOKIE=true
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:5678/healthz || exit 1"]
+      interval: 60s
+      timeout: 10s
+      retries: 10
+
+  tisp-proxy:
+    <<: *default-restart
+    ports: !reset []
+
+volumes:
+  certbot_webroot:
+  certbot_certs:

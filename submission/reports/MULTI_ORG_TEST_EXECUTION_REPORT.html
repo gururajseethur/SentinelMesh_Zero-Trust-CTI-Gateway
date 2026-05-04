@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SentinelMesh — Multi-Organization Test Execution Report</title>
+<style>
+  body { font-family: Segoe UI, Arial, sans-serif; max-width: 960px; margin: 0 auto; padding: 40px; color: #1a1a2e; }
+  h1 { color: #0f3460; border-bottom: 3px solid #e94560; padding-bottom: 12px; }
+  h2 { color: #16213e; border-left: 4px solid #0f3460; padding-left: 12px; margin-top: 36px; }
+  h3 { color: #0f3460; margin-top: 24px; }
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+  th { background: #0f3460; color: white; padding: 10px 14px; text-align: left; }
+  td { padding: 9px 14px; border-bottom: 1px solid #ddd; }
+  tr:nth-child(even) { background: #f7f9fc; }
+  .badge-pass { background: #d4edda; color: #155724; padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: 700; }
+  .badge-critical { background: #f8d7da; color: #721c24; padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: 700; }
+  .badge-high { background: #fff3cd; color: #856404; padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: 700; }
+  .badge-corr { background: #cce5ff; color: #004085; padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: 700; }
+  .summary-box { background: #eef2ff; border: 1px solid #c7d2fe; border-radius: 8px; padding: 20px; margin: 20px 0; }
+  .metric-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin: 20px 0; }
+  .metric-card { background: #f0f4ff; border: 1px solid #c7d2fe; border-radius: 8px; padding: 16px; text-align: center; }
+  .metric-card .num { font-size: 28px; font-weight: 800; color: #0f3460; }
+  .metric-card .lbl { font-size: 12px; color: #555; margin-top: 4px; }
+  .org-card { border: 1px solid #c7d2fe; border-radius: 8px; padding: 16px; margin: 8px 0; background: #f8faff; }
+  .org-card h4 { margin: 0 0 8px; color: #0f3460; }
+  .tlp-red { background: #f8d7da; color: #721c24; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 700; }
+  .tlp-amber { background: #fff3cd; color: #856404; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 700; }
+  .tlp-green { background: #d4edda; color: #155724; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 700; }
+  .tlp-clear { background: #e2e3e5; color: #383d41; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 700; }
+  code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: 13px; font-family: Consolas, monospace; }
+  .footer { margin-top: 48px; border-top: 2px solid #e2e8f0; padding-top: 16px; font-size: 12px; color: #888; }
+  @media print { body { padding: 20px; } }
+</style>
+</head>
+<body>
+
+<h1>SentinelMesh — Multi-Organization Test Execution Report</h1>
+<p><strong>Project:</strong> Implementing Security Measures within a Threat Intelligence Sharing Platform<br>
+<strong>Candidate:</strong> Gururaj Seethuru<br>
+<strong>Test Date:</strong> 2026-05-01<br>
+<strong>Dataset:</strong> <code>tisp-tools/examples/production-iocs.json</code> (50 IOCs)<br>
+<strong>Analysis Engine:</strong> TISP Tools v1.0 (Node.js ESM)</p>
+
+<div class="summary-box">
+  <strong>Test Summary:</strong> Multi-organisation IOC sharing was simulated across three partner organisations
+  (ORG-A SOC, ORG-B CERT, ORG-C DFIR) using 50 production-grade indicators. The TISP correlation engine
+  identified 22 cross-organisation correlations and 41 emerging threat themes. APT29 was confirmed as the
+  dominant threat actor with indicators reported by all three organisations independently.
+</div>
+
+<div class="metric-grid">
+  <div class="metric-card"><div class="num">50</div><div class="lbl">Total IOCs</div></div>
+  <div class="metric-card"><div class="num">3</div><div class="lbl">Partner Orgs</div></div>
+  <div class="metric-card"><div class="num">22</div><div class="lbl">Correlated IOCs</div></div>
+  <div class="metric-card"><div class="num">41</div><div class="lbl">Threat Themes</div></div>
+</div>
+
+<h2>1. Test Objectives</h2>
+
+<ol>
+  <li>Validate that indicators from multiple organisations can be ingested and normalised into a common STIX 2.1 format.</li>
+  <li>Verify cross-organisation correlation: the same threat IOC submitted by different partners is detected and linked.</li>
+  <li>Confirm TLP policy enforcement: RED indicators are not visible to unauthorised sharing groups.</li>
+  <li>Validate trust scoring: organisations with higher historical accuracy receive higher reliability scores.</li>
+  <li>Confirm that YARA rules and network indicators can co-exist in the same bundle.</li>
+</ol>
+
+<h2>2. Organisation Profiles</h2>
+
+<div class="org-card">
+  <h4>ORG-A SOC — Security Operations Centre</h4>
+  <p><strong>IOCs submitted:</strong> 17 | <strong>Avg confidence:</strong> 84.88% | <strong>High-severity:</strong> 14 | <strong>Reliability score:</strong> 140.88</p>
+  <p><strong>Sharing level:</strong> Community sharing — TLP:GREEN and TLP:AMBER indicators shared broadly</p>
+  <p><strong>TLP breakdown:</strong> <span class="tlp-green">GREEN ×4</span> <span class="tlp-amber">AMBER ×9</span> <span class="tlp-red">RED ×4</span></p>
+  <p><strong>Key contributions:</strong> Ransomware YARA rules, APT29 C2 IPs, exfiltration staging domains</p>
+</div>
+
+<div class="org-card">
+  <h4>ORG-B CERT — Computer Emergency Response Team</h4>
+  <p><strong>IOCs submitted:</strong> 16 | <strong>Avg confidence:</strong> 83.50% | <strong>High-severity:</strong> 15 | <strong>Reliability score:</strong> 143.50</p>
+  <p><strong>Sharing level:</strong> Community sharing — TLP:AMBER with selective RED</p>
+  <p><strong>TLP breakdown:</strong> <span class="tlp-amber">AMBER ×12</span> <span class="tlp-red">RED ×4</span></p>
+  <p><strong>Key contributions:</strong> SSH brute-force IPs, malware hashes, spear-phishing domains</p>
+</div>
+
+<div class="org-card">
+  <h4>ORG-C DFIR — Digital Forensics & Incident Response</h4>
+  <p><strong>IOCs submitted:</strong> 17 | <strong>Avg confidence:</strong> 85.76% | <strong>High-severity:</strong> 16 | <strong>Reliability score:</strong> 149.76</p>
+  <p><strong>Sharing level:</strong> Restricted — HIGH confidence indicators only; RED TLP for most critical</p>
+  <p><strong>TLP breakdown:</strong> <span class="tlp-amber">AMBER ×8</span> <span class="tlp-red">RED ×9</span></p>
+  <p><strong>Key contributions:</strong> Wiper malware YARA, APT29 lateral movement hosts, ransomware payment sites</p>
+</div>
+
+<h2>3. Test Scenarios Executed</h2>
+
+<table>
+  <tr><th>#</th><th>Scenario</th><th>Expected Result</th><th>Actual Result</th><th>Status</th></tr>
+  <tr>
+    <td>T-01</td>
+    <td>Same IP submitted by ORG-A and ORG-C</td>
+    <td>Correlation detected; sourceCount = 2</td>
+    <td>203.0.113.155 correlated (ORG-A + ORG-C, CRITICAL/93%)</td>
+    <td><span class="badge-pass">PASS</span></td>
+  </tr>
+  <tr>
+    <td>T-02</td>
+    <td>Same IP submitted by all 3 orgs</td>
+    <td>Correlation detected; sourceCount = 3</td>
+    <td>198.51.100.33 confirmed by ORG-A, ORG-B, ORG-C (CRITICAL)</td>
+    <td><span class="badge-pass">PASS</span></td>
+  </tr>
+  <tr>
+    <td>T-03</td>
+    <td>Same domain submitted by ORG-A and ORG-B</td>
+    <td>Domain correlation; confidence max applied</td>
+    <td>malware-control.example correlated (max confidence 90%)</td>
+    <td><span class="badge-pass">PASS</span></td>
+  </tr>
+  <tr>
+    <td>T-04</td>
+    <td>TLP:RED indicator (ransom-payment.example)</td>
+    <td>Indicator present but marked restricted</td>
+    <td>Indicator retained with TLP:RED marking ref in STIX bundle</td>
+    <td><span class="badge-pass">PASS</span></td>
+  </tr>
+  <tr>
+    <td>T-05</td>
+    <td>YARA rule from ORG-C (wiper detection)</td>
+    <td>YARA normalised to STIX indicator with pattern_type=yara</td>
+    <td>rule Wiper_MBR_Overwrite → STIX indicator, pattern_type: yara</td>
+    <td><span class="badge-pass">PASS</span></td>
+  </tr>
+  <tr>
+    <td>T-06</td>
+    <td>MD5 hash from ORG-A and ORG-B</td>
+    <td>Hash correlation; higher confidence wins</td>
+    <td>44d88612... correlated, maxConfidence=80% (ORG-A), sourceCount=2</td>
+    <td><span class="badge-pass">PASS</span></td>
+  </tr>
+  <tr>
+    <td>T-07</td>
+    <td>Trust scoring: ORG-C vs ORG-A</td>
+    <td>ORG-C DFIR higher score due to CRITICAL ratio</td>
+    <td>ORG-C: 149.76 > ORG-B: 143.50 > ORG-A: 140.88</td>
+    <td><span class="badge-pass">PASS</span></td>
+  </tr>
+  <tr>
+    <td>T-08</td>
+    <td>APT29 tag correlation across all 3 orgs</td>
+    <td>Emerging theme: count ≥ 3, sourceCount = 3</td>
+    <td>APT29: count=17, sourceCount=3, maxSeverity=CRITICAL</td>
+    <td><span class="badge-pass">PASS</span></td>
+  </tr>
+  <tr>
+    <td>T-09</td>
+    <td>URL with query params (PII risk)</td>
+    <td>Query params redacted in STIX output</td>
+    <td>https://malware-control.example/update?redacted=289539f21c57</td>
+    <td><span class="badge-pass">PASS</span></td>
+  </tr>
+  <tr>
+    <td>T-10</td>
+    <td>STIX bundle ID is deterministic</td>
+    <td>Same input → same bundle ID (reproducible)</td>
+    <td>bundle ID derived from SHA-based UUID of indicator IDs</td>
+    <td><span class="badge-pass">PASS</span></td>
+  </tr>
+</table>
+<p><strong>Result: 10/10 scenarios PASSED.</strong></p>
+
+<h2>4. Correlation Results Matrix</h2>
+
+<table>
+  <tr><th>Indicator</th><th>Type</th><th>Sources</th><th>Max Severity</th><th>Max Confidence</th></tr>
+  <tr><td>203.0.113.0/24 (subnet)</td><td>ipv4</td><td>ORG-A, ORG-B, ORG-C</td><td><span class="badge-critical">CRITICAL</span></td><td>95%</td></tr>
+  <tr><td>198.51.100.0/24 (subnet)</td><td>ipv4</td><td>ORG-A, ORG-B, ORG-C</td><td><span class="badge-critical">CRITICAL</span></td><td>96%</td></tr>
+  <tr><td>malware-control.example</td><td>domain</td><td>ORG-A, ORG-B</td><td><span class="badge-critical">CRITICAL</span></td><td>90%</td></tr>
+  <tr><td>exfil-staging.example</td><td>domain</td><td>ORG-A, ORG-C</td><td><span class="badge-critical">CRITICAL</span></td><td>94%</td></tr>
+  <tr><td>ransom-payment.example</td><td>domain</td><td>ORG-A, ORG-C</td><td><span class="badge-critical">CRITICAL</span></td><td>97%</td></tr>
+  <tr><td>backdoor-listener.example</td><td>domain</td><td>ORG-A, ORG-B</td><td><span class="badge-critical">CRITICAL</span></td><td>91%</td></tr>
+  <tr><td>44d88612fea8a8f36de82e1278abb02f</td><td>md5</td><td>ORG-A, ORG-B</td><td><span class="badge-high">HIGH</span></td><td>80%</td></tr>
+  <tr><td>phishing-portal.example</td><td>domain</td><td>ORG-B, ORG-C</td><td><span class="badge-high">HIGH</span></td><td>84%</td></tr>
+  <tr><td>spear-phish-cdn.example</td><td>domain</td><td>ORG-B, ORG-C</td><td><span class="badge-high">HIGH</span></td><td>85%</td></tr>
+</table>
+
+<h2>5. TLP Enforcement Validation</h2>
+
+<table>
+  <tr><th>TLP Level</th><th>Policy</th><th>IOC Count</th><th>Sharing Allowed</th></tr>
+  <tr><td><span class="tlp-red">TLP:RED</span></td><td>Named recipients only, no redistribution</td><td>17</td><td>TISP internal only</td></tr>
+  <tr><td><span class="tlp-amber">TLP:AMBER</span></td><td>Limited sharing within community</td><td>29</td><td>Partner orgs with agreement</td></tr>
+  <tr><td><span class="tlp-green">TLP:GREEN</span></td><td>Community-wide sharing</td><td>4</td><td>All TISP members</td></tr>
+  <tr><td><span class="tlp-clear">TLP:CLEAR</span></td><td>Unrestricted public sharing</td><td>0</td><td>Anyone</td></tr>
+</table>
+
+<p><strong>Result:</strong> All 50 indicators correctly tagged with TLP markings in STIX bundle. TLP:RED indicators
+carry marking-definition reference <code>marking-definition--5e57c739-391a-4eb3-b6be-7d15ca92d5ed</code> and
+are not automatically propagated to lower-trust sharing groups.</p>
+
+<h2>6. Emerging Threat Themes</h2>
+
+<table>
+  <tr><th>Theme</th><th>Indicator Count</th><th>Orgs Reporting</th><th>Max Severity</th></tr>
+  <tr><td>APT29</td><td>17</td><td>3</td><td><span class="badge-critical">CRITICAL</span></td></tr>
+  <tr><td>C2</td><td>9</td><td>3</td><td><span class="badge-critical">CRITICAL</span></td></tr>
+  <tr><td>Ransomware</td><td>9</td><td>3</td><td><span class="badge-critical">CRITICAL</span></td></tr>
+  <tr><td>Malware</td><td>8</td><td>3</td><td><span class="badge-critical">CRITICAL</span></td></tr>
+  <tr><td>Bruteforce</td><td>6</td><td>3</td><td><span class="badge-high">HIGH</span></td></tr>
+  <tr><td>YARA rules</td><td>5</td><td>3</td><td><span class="badge-critical">CRITICAL</span></td></tr>
+  <tr><td>Exfiltration</td><td>4</td><td>3</td><td><span class="badge-critical">CRITICAL</span></td></tr>
+  <tr><td>Spear-phishing</td><td>4</td><td>2</td><td><span class="badge-critical">CRITICAL</span></td></tr>
+</table>
+
+<h2>7. Source Reliability Ranking</h2>
+
+<table>
+  <tr><th>Organisation</th><th>IOC Count</th><th>Avg Confidence</th><th>High-Severity</th><th>Reliability Score</th></tr>
+  <tr><td>ORG-C DFIR</td><td>17</td><td>85.76%</td><td>16</td><td><strong>149.76</strong></td></tr>
+  <tr><td>ORG-B CERT</td><td>16</td><td>83.50%</td><td>15</td><td><strong>143.50</strong></td></tr>
+  <tr><td>ORG-A SOC</td><td>17</td><td>84.88%</td><td>14</td><td><strong>140.88</strong></td></tr>
+</table>
+
+<h2>8. Recommended Actions (from TISP analysis engine)</h2>
+<ol>
+  <li>Promote multi-source high-confidence indicators to MISP sharing groups.</li>
+  <li>Create TheHive cases for CRITICAL indicators tagged <code>c2</code>, <code>ransomware</code>, or <code>credential-access</code>.</li>
+  <li>Push sanitized STIX bundles to TAXII collections for partner consumption.</li>
+  <li>Review low-confidence single-source indicators before external sharing.</li>
+</ol>
+
+<h2>9. Lessons Learned</h2>
+<ul>
+  <li><strong>Subnet anonymization is effective:</strong> IPv4 addresses are grouped to /24 subnets in STIX output, preserving threat intelligence value while reducing PII exposure.</li>
+  <li><strong>Multi-source confirmation is a strong signal:</strong> The 22 correlated indicators, especially those confirmed by all 3 orgs, represent the highest-priority actionable intelligence.</li>
+  <li><strong>YARA rules integrate cleanly:</strong> All 5 YARA indicators normalised correctly to STIX with <code>pattern_type: yara</code>.</li>
+  <li><strong>TLP:RED discipline:</strong> 34% of indicators are marked RED — reflects mature opsec culture where sensitive IOCs are protected.</li>
+</ul>
+
+<div class="footer">
+  SentinelMesh — Multi-Organization Test Execution Report | Gururaj Seethuru | 2026-05-01<br>
+  All test data generated using TISP Tools v1.0 from examples/production-iocs.json
+</div>
+</body>
+</html>
