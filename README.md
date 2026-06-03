@@ -1,5 +1,13 @@
 # SentinelMesh
 
+<p>
+<img src="https://img.shields.io/badge/zero--trust-RS256%20JWKS-blue" alt="zero-trust" />
+<img src="https://img.shields.io/badge/auth-Keycloak%20%2B%20OIDC-success" alt="keycloak" />
+<img src="https://img.shields.io/badge/stack-MISP%20%C2%B7%20OpenCTI%20%C2%B7%20TheHive-0a7" alt="stack" />
+<img src="https://img.shields.io/badge/frontend-React%2019%20%2B%20Vite%208-61dafb" alt="frontend" />
+<img src="https://img.shields.io/badge/capstone-BIA%20Master--Diploma-purple" alt="capstone" />
+</p>
+
 **Zero-trust threat intelligence platform** — every API request is verified against a live JWKS endpoint before any upstream service is touched. No bypass mode, no symmetric fallback, no degraded state. Either the RS256 JWT is valid or the request is dropped with 401.
 
 Built on MISP, OpenCTI, TheHive, and Keycloak, with a Node.js API vault ([tisp-proxy](tisp-proxy/)) that enforces mandatory JWT verification on startup and per-request. The React command center ([tisp-command-center](tisp-command-center/)) runs in simulation mode for demos and switches to live Keycloak OIDC auth when environment variables are set.
