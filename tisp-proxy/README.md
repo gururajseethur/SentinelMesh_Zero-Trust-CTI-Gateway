@@ -77,5 +77,4 @@ starts a local JWKS server. No live Keycloak instance required.
 npm test
 ```
 
-Tests are also run automatically in CI via the `security` job in
-`.github/workflows/ci.yml`.
+There is no CI workflow in this repository; run the command above locally.

@@ -162,7 +162,6 @@ tisp-nexus/
 | Automation | n8n (self-hosted) |
 | Observability | Grafana, Elasticsearch + Kibana |
 | Infrastructure | Docker Compose, Nginx, PostgreSQL, MinIO, RabbitMQ |
-| CI | GitHub Actions — lint, build, unit tests, security tests, infra validation |
 
 ---
 
@@ -277,10 +276,19 @@ Full documentation: `docs/` and `submission/deliverables/`.
 
 ---
 
-## CI Pipeline
+## Checks
 
-| Job | Checks |
-|---|---|
+There is no CI workflow in this repository — these run locally.
+
+| Area | Command | Covers |
+|---|---|---|
+| Dashboard | `cd tisp-command-center && npm run lint && npm run build && npm test` | ESLint, production build, unit tests |
+| Dashboard end-to-end | `cd tisp-command-center && npm run e2e` | Playwright smoke test |
+| API vault | `cd tisp-proxy && npm test` | JWT verification — generates its own RSA key pair and local JWKS server, so no Keycloak instance is needed |
+| CTI tools | `cd tisp-tools && npm test` | IOC normalisation and STIX bundle shape |
+| Infrastructure | `cd tisp-infra && docker compose config` and `docker compose -f docker-compose.yml -f docker-compose.prod.yml config` | Compose validation for the base stack and the production overlay |
+
+---|---|
 | `dashboard` | lint, build, 25 unit tests, Playwright e2e |
 | `security` | 7 cryptographic JWT security tests (self-contained, no KC needed) |
 | `tools` | CTI utility correctness — IOC normalization, STIX output shape |
